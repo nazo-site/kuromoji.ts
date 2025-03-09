@@ -1,6 +1,6 @@
 {
   "name": "@nazo-site/kuromoji.ts",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "author": {
     "name": "nazo-site",
     "url": "https://github.com/nazo-site/"
@@ -17,7 +17,7 @@
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nazo-site/kuromoji.ts.git"
+    "url": "git+https://github.com/nazo-site/kuromoji.ts.git"
   },
   "contributors": [
     {
