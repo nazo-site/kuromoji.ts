@@ -14,7 +14,7 @@ npmなどで`@nazo-site/kuromoji.ts`パッケージをインストールしま�
 
 ### ブラウザー
 
-[dist/index.browser.js](dist/index.browser.js)(ESM形式)または[dist/index.browser.umd.cjs](dist/index.browser.umd.cjs)(CJS形式)をHTMLファイルから読み込める場所に配置します。
+dist/index.browser.js(ESM形式)またはdist/index.browser.umd.cjs(CJS形式)をHTMLファイルから読み込める場所に配置します。
 
 ## 使用方法
 
