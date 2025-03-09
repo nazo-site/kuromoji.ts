@@ -19,15 +19,16 @@
 "use strict";
 
 import DictionaryLoader from "./DictionaryLoader.ts";
+import { joinPath } from "../../util/path.ts";
 
 export default class FetchDictionaryLoader extends DictionaryLoader {
   /**
    * Utility function to load gzipped dictionary
-   * @param {string} url Dictionary URL
+   * @param {string} fileName Dictionary file name
    * @returns {Promise<Uint8Array>} buffer Loaded buffer
    */
-  async loadArrayBuffer(file: string) {
-    const stream = (await fetch(file)).body?.pipeThrough(new DecompressionStream("gzip"));
+  async loadArrayBuffer(fileName: string) {
+    const stream = (await fetch(joinPath(this.dictionaryPath, fileName))).body?.pipeThrough(new DecompressionStream("gzip"));
     return await new Response(stream).arrayBuffer();
   };
 }

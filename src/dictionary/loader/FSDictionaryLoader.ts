@@ -22,15 +22,16 @@ import { readFile } from "fs/promises";
 import { gunzipSync } from "zlib";
 
 import DictionaryLoader from "./DictionaryLoader.ts";
+import { joinPath } from "../../util/path.ts";
 
 export default class FSDictionaryLoader extends DictionaryLoader {
   /**
-   * Utility function
-   * @param {string} file Dictionary file path
+   * Utility function to load gzipped dictionary
+   * @param {string} fileName Dictionary file name
    * @returns {Promise<ArrayBuffer>} Loaded buffer
    */
-  async loadArrayBuffer(file: string) {
-    const buffer = await readFile(file);
+  async loadArrayBuffer(fileName: string) {
+    const buffer = await readFile(joinPath(this.dictionaryPath, fileName));
     const decompressed = gunzipSync(buffer);
     const typedArray = new Uint8Array(decompressed);
     return typedArray.buffer;

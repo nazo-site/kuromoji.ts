@@ -20,7 +20,7 @@
 
 import DynamicDictionaries from "./dict/../../DynamicDictionaries.ts";
 
-export default class DictionaryLoader {
+export default abstract class DictionaryLoader {
   dic: DynamicDictionaries;
   dictionaryPath: string;
 
@@ -34,9 +34,7 @@ export default class DictionaryLoader {
     this.dictionaryPath = dictionaryPath;
   }
 
-  async loadArrayBuffer(_file: string): Promise<ArrayBuffer> {
-    throw "DictionaryLoader#loadArrayBuffer should be overwrite";
-  }
+  abstract loadArrayBuffer(_fileName: string): Promise<ArrayBuffer>;
 
   /**
    * Load dictionary files
@@ -46,7 +44,7 @@ export default class DictionaryLoader {
     await Promise.all([
       // Trie
       (async () => {
-        const buffers = await Promise.all(["base.dat.gz", "check.dat.gz"].map(async (fileName) => await this.loadArrayBuffer(joinPath(this.dictionaryPath, fileName))));
+        const buffers = await Promise.all(["base.dat.gz", "check.dat.gz"].map((fileName) => this.loadArrayBuffer(fileName)));
         const baseBuffer = new Int32Array(buffers[0]);
         const checkBuffer = new Int32Array(buffers[1]);
 
@@ -54,7 +52,7 @@ export default class DictionaryLoader {
       })(),
       // Token info dictionaries
       (async () => {
-        const buffers = await Promise.all(["tid.dat.gz", "tid_pos.dat.gz", "tid_map.dat.gz"].map(async (fileName) => await this.loadArrayBuffer(joinPath(this.dictionaryPath, fileName))));
+        const buffers = await Promise.all(["tid.dat.gz", "tid_pos.dat.gz", "tid_map.dat.gz"].map((fileName) => this.loadArrayBuffer(fileName)));
         const tokenInfoBuffer = new Uint8Array(buffers[0]);
         const posBuffer = new Uint8Array(buffers[1]);
         const targetMapBuffer = new Uint8Array(buffers[2]);
@@ -63,14 +61,14 @@ export default class DictionaryLoader {
       })(),
       // Connection cost matrix
       (async () => {
-        const buffer = await this.loadArrayBuffer(joinPath(this.dictionaryPath, "cc.dat.gz"));
+        const buffer = await this.loadArrayBuffer("cc.dat.gz");
         const ccBuffer = new Int16Array(buffer);
 
         this.dic.loadConnectionCosts(ccBuffer);
       })(),
       // Unknown dictionaries
       (async () => {
-        const buffers = await Promise.all(["unk.dat.gz", "unk_pos.dat.gz", "unk_map.dat.gz", "unk_char.dat.gz", "unk_compat.dat.gz", "unk_invoke.dat.gz"].map(async (fileName) => await this.loadArrayBuffer(joinPath(this.dictionaryPath, fileName))));
+        const buffers = await Promise.all(["unk.dat.gz", "unk_pos.dat.gz", "unk_map.dat.gz", "unk_char.dat.gz", "unk_compat.dat.gz", "unk_invoke.dat.gz"].map((fileName) => this.loadArrayBuffer(fileName)));
         const unkBuffer = new Uint8Array(buffers[0]);
         const unkPosBuffer = new Uint8Array(buffers[1]);
         const unkMapBuffer = new Uint8Array(buffers[2]);
@@ -86,5 +84,3 @@ export default class DictionaryLoader {
     return this.dic;
   };
 }
-
-const joinPath = (base: string, fileName: string) => base + (base.endsWith("/") ? "" : "/") + fileName;
