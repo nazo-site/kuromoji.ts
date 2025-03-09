@@ -18,9 +18,16 @@
 
 "use strict";
 
-import DictionaryBuilder from "./dictionary/builder/DictionaryBuilder.ts";
+export { default as Tokenizer } from "./tokenizer/Tokenizer.ts";
+
+export type { Token } from "./util/IpadicFormatter.ts";
+
+export { default as TokenizerBuilder } from "./tokenizer/builder/TokenizerBuilder.ts";
 
 export { buildFSTokenizer } from "./fs.ts";
 export { buildFetchTokenizer } from "./fetch.ts";
 
+export { default as DictionaryLoader } from "./dictionary/loader/DictionaryLoader.ts";
+
+import DictionaryBuilder from "./dictionary/builder/DictionaryBuilder.ts";
 export const dictionaryBuilder = () => new DictionaryBuilder();

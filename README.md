@@ -78,7 +78,7 @@ console.log(tokens);
 ## API
 
 `tokenize`関数は下記のようなJSONの配列を返します。\
-(この型は[src/util/IpadicFormatter.ts](src/util/IpadicFormatter.ts)で定義されています。)
+(この型はsrc/util/IpadicFormatter.tsで定義されています。)
 
 ```typescript
 [{
