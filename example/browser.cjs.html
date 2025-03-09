@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@nazo-site/kuromoji.ts</title>
+  <script src="../dist/index.browser.umd.cjs"></script>
+  <style>
+    form {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      margin-block: 16px;
+      align-items: center;
+    }
+
+    input {
+      flex: auto;
+      height: 32px;
+    }
+
+    button {
+      flex: initial;
+      height: 32px;
+      padding-inline: 16px;
+    }
+
+    table {
+      border: 1px solid lightgray;
+      font-size: smaller;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 2px solid transparent;
+      padding-inline: 4px;
+      text-align: start;
+    }
+
+    thead>tr,
+    tbody>tr:nth-child(even) {
+      background-color: whitesmoke;
+    }
+
+    #loading {
+      background-color: dodgerblue;
+      color: white;
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>@nazo-site/kuromoji.ts (CJS)</h1>
+
+  <div id="main" class="hidden">
+    <form>
+      <input value="すもももももももものうち" />
+      <button>解析</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>表層形</th>
+          <th>品詞</th>
+          <th>品詞細分類1</th>
+          <th>品詞細分類2</th>
+          <th>品詞細分類3</th>
+          <th>活用型</th>
+          <th>活用形</th>
+          <th>基本形</th>
+          <th>読み</th>
+          <th>発音</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="loading">
+    辞書を読み込んでいます……
+  </div>
+
+  <script>
+    globalThis["@nazo-site/kuromoji-ts"].buildFetchTokenizer({ dictionaryPath: "../dict" }).then((tokenizer) => {
+      document.querySelector("#main").classList.remove("hidden");
+      document.querySelector("#loading").classList.add("hidden");
+
+      document.querySelector("form").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const tokens = tokenizer.tokenize(document.querySelector("input").value);
+
+        const tbody = document.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        tokens.forEach((token) => {
+          const tr = document.createElement("tr");
+          ["surfaceForm", "pos", "posDetail1", "posDetail2", "posDetail3", "conjugatedType", "conjugatedForm", "basicForm", "reading", "pronunciation"].forEach((attribute) => {
+            const td = document.createElement("td");
+            td.innerText = token[attribute].toString() ?? "";
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

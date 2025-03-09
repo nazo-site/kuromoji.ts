@@ -1,104 +1,113 @@
-kuromoji.js
-===========
+# @nazo-site/kuromoji.ts
 
-[![Build Status](https://travis-ci.org/takuyaa/kuromoji.js.svg?branch=master)](https://travis-ci.org/takuyaa/kuromoji.js)
-[![Coverage Status](https://coveralls.io/repos/github/takuyaa/kuromoji.js/badge.svg?branch=master)](https://coveralls.io/github/takuyaa/kuromoji.js?branch=master)
-[![npm version](https://badge.fury.io/js/kuromoji.svg)](https://badge.fury.io/js/kuromoji)
-[![dependencies](https://david-dm.org/takuyaa/kuromoji.js.svg)](https://david-dm.org/takuyaa/kuromoji.js)
-[![Code Climate](https://codeclimate.com/github/takuyaa/kuromoji.js/badges/gpa.svg)](https://codeclimate.com/github/takuyaa/kuromoji.js)
-[![Downloads](https://img.shields.io/npm/dm/kuromoji.svg)](https://www.npmjs.com/package/kuromoji)
+日本語形態素解析ライブラリーの[Kuromoji]のJavaScript実装である[kuromoji.js]をTypeScriptで書き直したものです。
 
-JavaScript implementation of Japanese morphological analyzer.
-This is a pure JavaScript porting of [Kuromoji](https://www.atilika.com/ja/kuromoji/).
-
-You can see how kuromoji.js works in [demo site](https://takuyaa.github.io/kuromoji.js/demo/tokenize.html).
-
-
-Directory
----------
-
-Directory tree is as follows:
-
-    build/
-      kuromoji.js -- JavaScript file for browser (Browserified)
-    demo/         -- Demo
-    dict/         -- Dictionaries for tokenizer (gzipped)
-    example/      -- Examples to use in Node.js
-    src/          -- JavaScript source
-    test/         -- Unit test
-
-
-Usage
------
-
-You can tokenize sentences with only 5 lines of code.
-If you need working examples, you can see the files under the demo or example directory.
-
+## インストール方法
 
 ### Node.js
 
-Install with npm package manager:
+npmなどで`@nazo-site/kuromoji.ts`パッケージをインストールします。
 
-    npm install kuromoji
+```shell
+% npm install @nazo-site/kuromoji.ts
+```
 
-Load this library as follows:
+### ブラウザー
 
-    var kuromoji = require("kuromoji");
+[dist/index.browser.js](dist/index.browser.js)(ESM形式)または[dist/index.browser.umd.cjs](dist/index.browser.umd.cjs)(CJS形式)をHTMLファイルから読み込める場所に配置します。
 
-You can prepare tokenizer like this:
+## 使用方法
 
-    kuromoji.builder({ dicPath: "path/to/dictionary/dir/" }).build(function (err, tokenizer) {
-        // tokenizer is ready
-        var path = tokenizer.tokenize("すもももももももものうち");
-        console.log(path);
-    });
+### Node.js
 
+辞書データをファイルシステムから読み込む方法とフェッチAPIで読み込む方法があります。
 
+#### node:fsでの読み込み
 
-### Browser
+`buildFSTokenizer`関数はファイルシステムから辞書データを読み込みます。
 
-You only need the build/kuromoji.js and dict/*.dat.gz files
+```typescript
+import { buildFSTokenizer } from "@nazo-site/kuromoji.ts";
 
-Install with Bower package manager:
+const tokenizer = await buildFSTokenizer({ dictionaryPath: "path/to/dictionary/dir/" });
+const tokens = tokenizer.tokenize("すもももももももものうち");
+console.log(tokens);
+```
 
-    bower install kuromoji
+#### fetchでの読み込み
 
-Or you can use the kuromoji.js file and dictionary files from the GitHub repository.
+`buildFetchTokenizer`関数はフェッチAPIで辞書データを読み込みます。
 
-In your HTML:
+```typescript
+import { buildFetchTokenizer } from "@nazo-site/kuromoji.ts";
 
-    <script src="url/to/kuromoji.js"></script>
+const tokenizer = await buildFetchTokenizer({ dictionaryPath: "url/to/dictionary/dir/" });
+const tokens = tokenizer.tokenize("すもももももももものうち");
+console.log(tokens);
+```
 
-In your JavaScript:
+### ブラウザー
 
-    kuromoji.builder({ dicPath: "/url/to/dictionary/dir/" }).build(function (err, tokenizer) {
-        // tokenizer is ready
-        var path = tokenizer.tokenize("すもももももももものうち");
-        console.log(path);
-    });
+スクリプトをESModule(ESM)形式で読み込む方法とCommonJS(CJS)形式で読み込む方法があります。\
+辞書データはフェッチAPIで読み込みます。
 
+#### ESM形式
 
-API
----
+```html
+<script type="module">
+  import { buildFetchTokenizer } from "url/to/@nazo-site/kuromoji.ts/index.browser.js";
 
-The function tokenize() returns an JSON array like this:
+  const tokenizer = await buildFetchTokenizer({ dictionaryPath: "url/to/dictionary/dir/" });
+  const tokens = tokenizer.tokenize("すもももももももものうち");
+  console.log(tokens);
+</script>
+```
 
-    [ {
-        word_id: 509800,          // 辞書内での単語ID
-        word_type: 'KNOWN',       // 単語タイプ(辞書に登録されている単語ならKNOWN, 未知語ならUNKNOWN)
-        word_position: 1,         // 単語の開始位置
-        surface_form: '黒文字',    // 表層形
-        pos: '名詞',               // 品詞
-        pos_detail_1: '一般',      // 品詞細分類1
-        pos_detail_2: '*',        // 品詞細分類2
-        pos_detail_3: '*',        // 品詞細分類3
-        conjugated_type: '*',     // 活用型
-        conjugated_form: '*',     // 活用形
-        basic_form: '黒文字',      // 基本形
-        reading: 'クロモジ',       // 読み
-        pronunciation: 'クロモジ'  // 発音
-      } ]
+#### CJS形式
 
-(This is defined in src/util/IpadicFormatter.js)
+```html
+<script src="url/to/@nazo-site/kuromoji.ts/index.browser.umd.cjs"></script>
+<script>
+  globalThis["@nazo-site/kuromoji-ts"].buildFetchTokenizer({ dictionaryPath: "url/to/dictionary/dir/" }).then((tokenizer) => {
+    const tokens = tokenizer.tokenize("すもももももももものうち");
+    console.log(tokens);
+  });
+</script>
+```
 
-See also [JSDoc page](https://takuyaa.github.io/kuromoji.js/jsdoc/) in details.
+## API
+
+`tokenize`関数は下記のようなJSONの配列を返します。\
+(この型は[src/util/IpadicFormatter.ts](src/util/IpadicFormatter.ts)で定義されています。)
+
+```typescript
+[{
+  wordId: 509800,           // 辞書内での単語ID
+  wordType: "KNOWN",        // 単語タイプ(辞書に登録されている単語ならKNOWN, 未知語ならUNKNOWN)
+  wordPosition: 1,          // 単語の開始位置
+  surfaceForm: "黒文字",     // 表層形
+  pos: "名詞",               // 品詞
+  posDetail1: "一般",        // 品詞細分類1
+  posDetail2: "*",          // 品詞細分類2
+  posDetail3: "*",          // 品詞細分類3
+  conjugatedType: "*",      // 活用型
+  conjugatedForm: "*",      // 活用形
+  basicForm: "黒文字",       // 基本形
+  reading: "クロモジ",       // 読み
+  pronunciation: "クロモジ", // 発音
+}]
+```
+
+## ライセンス
+
+* このソフトウェアはApache License 2.0で配布されます。
+* このソフトウェアは[kuromoji.js]のソースコードを改変して含んでいます。\
+  kuromoji.jsはApache License 2.0で配布されています。
+* このソフトウェアはkuromoji.jsの依存先の[doublearray]のソースコードを改変して含んでいます。\
+  doublearrayはMITライセンスで配布されています。
+* このソフトウェアにはmecab-ipadic-2.7.0-20070801のデータを同梱しています。\
+  詳細については[NOTICE.md](NOTICE.md)を参照してください。
+
+[Kuromoji]: https://www.atilika.com/ja/kuromoji/
+[kuromoji.js]: https://github.com/takuyaa/kuromoji.js
+[doublearray]: https://github.com/takuyaa/doublearray

@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "chrome",
+      "name": "http://127.0.0.1:3002/example/browser.esm.html",
+      "request": "launch",
+      "url": "http://127.0.0.1:3002/example/browser.esm.html"
+    }
+  ]
+}
