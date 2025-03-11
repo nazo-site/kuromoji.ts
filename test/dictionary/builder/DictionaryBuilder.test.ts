@@ -17,7 +17,7 @@
 
 import { describe, beforeAll, test, expect } from "vitest";
 
-import fs from "fs";
+import { readFileSync } from "fs";
 
 import { dictionaryBuilder } from "../../../src/index";
 import Tokenizer from "../../../src/tokenizer/Tokenizer";
@@ -36,28 +36,25 @@ describe("DictionaryBuilder", () => {
     const builder = dictionaryBuilder();
 
     // Build token info dictionary
-    const tokenInfo = fs.readFileSync(TID_DIC_FILE, "utf-8");
+    const tokenInfo = readFileSync(TID_DIC_FILE, "utf-8");
     tokenInfo.split("\n").forEach((line) => {
       builder.addTokenInfoDictionary(line);
     });
 
     // Build connection costs matrix
-    const ccText = fs.readFileSync(CONNECTION_COSTS_FILE, "ascii");
-    const ccLines = ccText.split("\n");
-    ccLines.forEach((line) => {
+    const ccText = readFileSync(CONNECTION_COSTS_FILE, "ascii");
+    ccText.split("\n").forEach((line) => {
       builder.putCostMatrixLine(line);
     });
 
     // Build unknown dictionary
-    const cdText = fs.readFileSync(CHAR_DEF_FILE, "utf-8");
-    const cdLines = cdText.split("\n");
-    cdLines.forEach((line) => {
+    const cdText = readFileSync(CHAR_DEF_FILE, "utf-8");
+    cdText.split("\n").forEach((line) => {
       builder.putCharDefLine(line);
     });
 
-    const unkText = fs.readFileSync(UNK_DEF_FILE, "utf-8");
-    const unkLines = unkText.split("\n");
-    unkLines.forEach((line) => {
+    const unkText = readFileSync(UNK_DEF_FILE, "utf-8");
+    unkText.split("\n").forEach((line) => {
       builder.putUnkDefLine(line);
     });
 
