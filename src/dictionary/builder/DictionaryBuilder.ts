@@ -53,8 +53,7 @@ export default class DictionaryBuilder {
   }
 
   addTokenInfoDictionary(line: string) {
-    const newEntry = line.split(",");
-    this.tidEntries.push(newEntry);
+    this.tidEntries.push(line.split(","));
     return this;
   }
 
@@ -67,6 +66,10 @@ export default class DictionaryBuilder {
     return this;
   }
 
+  /**
+   * Put one line of "char.def" file for building CharacterDefinition object
+   * @param {string} line is a line of "char.def"
+   */
   putCharDefLine(line: string) {
     this.cdBuilder.putLine(line);
     return this;
