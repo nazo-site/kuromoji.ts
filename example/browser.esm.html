@@ -108,7 +108,7 @@
         const tr = document.createElement("tr");
         ["surfaceForm", "pos", "posDetail1", "posDetail2", "posDetail3", "conjugatedType", "conjugatedForm", "basicForm", "reading", "pronunciation"].forEach((attribute) => {
           const td = document.createElement("td");
-          td.innerText = token[attribute].toString() ?? "";
+          td.innerText = token[attribute]?.toString() ?? "";
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
