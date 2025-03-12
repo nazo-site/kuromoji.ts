@@ -2,6 +2,10 @@
 
 日本語形態素解析ライブラリーの[Kuromoji]のJavaScript実装である[kuromoji.js]をTypeScriptで書き直したものです。
 
+## デモ
+
+[デモサイト]で動作を体験できます。
+
 ## インストール方法
 
 ### Node.js
@@ -111,3 +115,5 @@ console.log(tokens);
 [Kuromoji]: https://www.atilika.com/ja/kuromoji/
 [kuromoji.js]: https://github.com/takuyaa/kuromoji.js
 [doublearray]: https://github.com/takuyaa/doublearray
+
+[デモサイト]: https://nazo-site.github.io/kuromoji.ts/demo/
