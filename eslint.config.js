@@ -38,6 +38,6 @@ export default [
     },
   },
   {
-    ignores: ["coverage/", "dist/"],
+    ignores: ["coverage/", "dist/", "docs/"],
   },
 ];
